@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  discussion:
+    types: [created]
+  discussion_comment:
+    types: [created]
+
+jobs:
+  discussion_created:
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.discussion && !github.event.comment }}
+    steps:
+      - name: comment
+        run: |
+          echo "created"
+
+  discussion_commented:
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.comment && github.event.discussion.state == 'open' }}
+    steps:
+      - name: comment
+        run: |
+          echo "commented"
+
+  discussion_closed:
+    runs-on: ubuntu-22.04
+    if: github.event.discussion.state != 'open'
+    steps:
+      - name: comment
+        run: |
+          echo "closed"
