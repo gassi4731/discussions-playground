@@ -1,55 +1,40 @@
-title: "[General] "
-labels: ["General Introduction"]
+title: ""
 body:
   - type: markdown
     attributes:
       value: |
-        This is text that will show up in the template!
+        詰まる所は皆一緒！このチャンネルで助け合っていきましょう！！
+        
+        ## 🙇‍♀️　ラベル(label)を設定しよう
+        研修生・受講生同士で、過去に出た質問を見るときの検索の容易性を上げるために、ラベルを設定しましょう！
+        右の**label**から自分の質問に内容に合うものを設定しましょう！
+        
+        ## 💪 質問を書いていこう
   - type: textarea
-    id: improvements
+    id: problem
     attributes:
-      label: Top 3 improvements
-      description: "What are the top 3 improvements we could make to this project?"
-      value: |
-        1.
-        2.
-        3.
-        ...
-      render: bash
+      label: 問題（何に困っているか）
+      description: "今困っていることを言語化してみましょう！ また、どの教科書の何ページやオリジナルWebサービスのどこで詰まっているなどを記入しましょう！"
     validations:
       required: true
-  - type: markdown
+  - type: textarea
+    id: try
     attributes:
-      value: |
-        ## Markdown header
-        And some more markdown
-  - type: input
-    id: has-id
-    attributes:
-      label: Suggestions
-      description: A description about suggestions to help you
+      label: 自分で挑戦してみたこと・試してみたこと
+      description: "どんなコマンドを打ってみた。こんな記事を参考にしてみたなどなんでもOK"
     validations:
       required: true
-  - type: dropdown
-    id: download
+  - type: textarea
+    id: error-photo
     attributes:
-      label: Which area of this project could be most improved?
-      options:
-        - Documentation
-        - Pull request review time
-        - Bug fix time
-        - Release cadence
+      label: エラー画面のスクショ
+      description: "エラーが起こっている画面のスクリーンショットを貼ってください！"
     validations:
       required: true
   - type: checkboxes
     attributes:
-      label: Check that box!
+      label: 質問出す前のチェックリスト
       options:
-        - label: This one!
+        - label: 
           required: true
         - label: I won't stop you if you check this one, too
-  - type: markdown
-    attributes:
-      value: |
-        ### The thrilling conclusion
-        _to our template_
