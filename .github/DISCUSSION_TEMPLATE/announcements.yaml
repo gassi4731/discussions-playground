@@ -4,17 +4,16 @@ body:
     attributes:
       value: |
         詰まる所は皆一緒！このチャンネルで助け合っていきましょう！！
-        
         ## 🙇‍♀️　ラベル(label)を設定しよう
         研修生・受講生同士で、過去に出た質問を見るときの検索の容易性を上げるために、ラベルを設定しましょう！
         右の**label**から自分の質問に内容に合うものを設定しましょう！
-        
         ## 💪 質問を書いていこう
   - type: textarea
     id: problem
     attributes:
       label: 問題（何に困っているか）
       description: "今困っていることを言語化してみましょう！ また、どの教科書の何ページやオリジナルWebサービスのどこで詰まっているなどを記入しましょう！"
+      value: ""
     validations:
       required: true
   - type: textarea
@@ -22,6 +21,7 @@ body:
     attributes:
       label: 自分で挑戦してみたこと・試してみたこと
       description: "どんなコマンドを打ってみた。こんな記事を参考にしてみたなどなんでもOK"
+      value: ""
     validations:
       required: true
   - type: textarea
@@ -29,12 +29,6 @@ body:
     attributes:
       label: エラー画面のスクショ
       description: "エラーが起こっている画面のスクリーンショットを貼ってください！"
+      value: ""
     validations:
       required: true
-  - type: checkboxes
-    attributes:
-      label: 質問出す前のチェックリスト
-      options:
-        - label: 
-          required: true
-        - label: I won't stop you if you check this one, too
