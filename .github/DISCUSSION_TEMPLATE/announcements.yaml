@@ -1,4 +1,4 @@
-title: ""
+title: "<質問のタイトルを入れましょう>"
 body:
   - type: markdown
     attributes:
@@ -13,7 +13,7 @@ body:
     attributes:
       label: 問題（何に困っているか）
       description: "今困っていることを言語化してみましょう！ また、どの教科書の何ページやオリジナルWebサービスのどこで詰まっているなどを記入しましょう！"
-      value: ""
+      value: " "
     validations:
       required: true
   - type: textarea
@@ -21,7 +21,7 @@ body:
     attributes:
       label: 自分で挑戦してみたこと・試してみたこと
       description: "どんなコマンドを打ってみた。こんな記事を参考にしてみたなどなんでもOK"
-      value: ""
+      value: " "
     validations:
       required: true
   - type: textarea
@@ -29,6 +29,6 @@ body:
     attributes:
       label: エラー画面のスクショ
       description: "エラーが起こっている画面のスクリーンショットを貼ってください！"
-      value: ""
+      value: " "
     validations:
       required: true
