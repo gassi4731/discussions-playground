@@ -5,7 +5,7 @@ on:
     types: [created, answered]
 
 jobs:
-  load_config:
+  discussion:
     runs-on: ubuntu-22.04
     steps:
       - name: Read config.json
@@ -13,41 +13,35 @@ jobs:
         uses: jaywcjlove/github-action-read-file@main
         with:
           path: config.json
-      - name: Write
+      - name: Write Config
         run: |
           echo "CHANNELS=${{ fromJson(steps.config.outputs.content) }}" >> $GITHUB_ENV
-  get_information:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: discussion
+          
+      - name: Get Discussion Action
         run: |
           echo "ACTION=${{ github.event.action }}" >> $GITHUB_ENV
           echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
           echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
           echo "DISCUSSION_BODY=${{ github.event.discussion.body }}" >> $GITHUB_ENV
           echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
-      - name: answer
+      - name: Get Answer Action
         if: env.ACTION == 'answered'
         run: |
           echo "ANSWER_ANSWER_URL=${{ github.event.answer.html_url }}" >> $GITHUB_ENV 
           echo "ANSWER_BODY=${{ github.event.answer.body }}" >> $GITHUB_ENV
           echo "ANSWER_USER_NAME=${{ github.event.answer.user.login }}" >> $GITHUB_ENV
+      
+      - name: Set ChannelId(If answerd)
+        if: env.ACTION == 'answered'
+        run: |
+          echo "CHANNELID=${{ $CHANNELS['allChannelId'] }}
+      - name: Set ChannelId(Not answerd)
+        if: env.ACTION != 'answered'
+        run: |
+          echo "CHANNELID=${{ $CHANNELS['instructorChannelId'] }}
+      
       - name: output
         run: |
           echo $ACTION
-          echo $DISCUSSION_URL
-          echo $DISCUSSION_TITLE
-          echo $DISCUSSION_BODY
-          echo $DISCUSSION_USER_NAME
-          echo $ANSWER_ANSWER_URL
-          echo $ANSWER_BODY
-          echo $ANSWER_USER_NAME
-  set_channel_id:
-    runs-on: ubuntu-22.04
-    needs: load_config
-    steps:
-      - name: output
-        run: |
-          echo $ACTION
-          echo $ACTION
-          echo $CHANNELS
+          echo $CHANNELID
+
