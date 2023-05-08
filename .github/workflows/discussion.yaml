@@ -34,11 +34,12 @@ jobs:
       - name: Set ChannelId(If answerd)
         if: env.ACTION == 'answered'
         run: |
-          echo "CHANNELID=${{ fromJson(env.CONFIG)['allChannelId'] }}
+          echo "CHANNELID=${{ fromJson(env.CONFIG)['allChannelId'] }}" >> $GITHUB_ENV
       - name: Set ChannelId(Not answerd)
         if: env.ACTION != 'answered'
         run: |
-          echo "CHANNELID=${{ fromJson(env.CONFIG)['instructorChannelId'] }}
+          echo "${{ fromJson(env.CONFIG) }}"
+          echo "CHANNELID=${{ fromJson(env.CONFIG)['instructorChannelId'] }}" >> $GITHUB_ENV
       
       - name: output
         run: |
