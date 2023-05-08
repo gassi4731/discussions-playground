@@ -5,6 +5,17 @@ on:
     types: [created, answered]
 
 jobs:
+  load_config:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Read config.json
+        id: config
+        uses: jaywcjlove/github-action-read-file@main
+        with:
+          path: config.json
+      - name: Write
+        run: |
+          echo "CHANNELS=${{ fromJson(steps.config.outputs.content) }}" >> $GITHUB_ENV
   get_information:
     runs-on: ubuntu-22.04
     steps:
@@ -33,15 +44,10 @@ jobs:
           echo $ANSWER_USER_NAME
   set_channel_id:
     runs-on: ubuntu-22.04
+    needs: load_config
     steps:
-      - name: Read config.json
-        id: config
-        uses: jaywcjlove/github-action-read-file@main
-        with:
-          path: config.json
       - name: output
         run: |
-          echo "${{ steps.config.outputs.content }}"
-          echo "${{ fromJson(steps.config.outputs.content) }}"
-          echo "${{ fromJson(steps.config.outputs.content)['allChannelId'] }}"
-          
+          echo $ACTION
+          echo $ACTION
+          echo $CHANNELS
