@@ -39,7 +39,6 @@ jobs:
         if: env.ACTION != 'answered'
         run: |
           echo "${{ fromJson(env.CONFIG) }}"
-          echo "CHANNELID=${{ fromJson(env.CONFIG)['instructorChannelId'] }}" >> $GITHUB_ENV
       
       - name: output
         run: |
