@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  discussion:
+    types: [created, answered]
+
+jobs:
+  discussion_created:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: comment
+        run: |
+          echo github.event.discussion.action
