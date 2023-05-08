@@ -42,6 +42,6 @@ jobs:
       - name: output
         run: |
           echo "${{ steps.config.outputs.content }}"
-          echo "${{ fronJson(steps.config.outputs.content) }}"
-          echo "${{ fronJson(steps.config.outputs.content)['allChannelId'] }}"
+          echo "${{ fromJson(steps.config.outputs.content) }}"
+          echo "${{ fromJson(steps.config.outputs.content)['allChannelId'] }}"
           
