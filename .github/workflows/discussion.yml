@@ -3,30 +3,34 @@ name: CI
 on:
   discussion:
     types: [created, answered]
-  discussion_comment:
-    types: [created]
 
 jobs:
   discussion_created:
     runs-on: ubuntu-22.04
-    if: ${{ github.event.discussion && !github.event.comment }}
+    if: ${{ github.event.discussion.action == "created" }}
     steps:
       - name: comment
         run: |
           echo "created"
+          echo "${{ github.event.discussion.category.id }}"
+          echo "${{ github.event.discussion.html_url }}"
+          echo "${{ github.event.discussion.title }}"
+          echo "${{ github.event.discussion.body }}"
+          echo "${{ github.event.discussion.user.login }}"
 
-  discussion_commented:
+  discussion_answerd:
     runs-on: ubuntu-22.04
-    if: ${{ github.event.comment && github.event.discussion.state == 'open' }}
+    if: ${{ github.event.discussion.action == "answered" }}
     steps:
       - name: comment
         run: |
-          echo "commented"
-
-  discussion_closed:
-    runs-on: ubuntu-22.04
-    if: github.event.discussion.state != 'open'
-    steps:
-      - name: comment
-        run: |
-          echo "closed"
+          echo "answered"
+          echo "${{ github.event.discussion.category.id }}"
+          echo "${{ github.event.discussion.html_url }}"
+          echo "${{ github.event.discussion.title }}"
+          echo "${{ github.event.discussion.body }}"
+          echo "${{ github.event.discussion.user.login }}"
+          echo "${{ github.event.answer.html_url }}"
+          echo "${{ github.event.answer.title }}"
+          echo "${{ github.event.answer.body }}"
+          echo "${{ github.event.answer.user.login }}"
