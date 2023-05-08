@@ -28,4 +28,4 @@ jobs:
       - name: load_json_file
         run: |
           channel_config=$(cat ./config.json | jq -r .title)
-          echo "${{data}}"
+          echo "${{channel_config}}"
