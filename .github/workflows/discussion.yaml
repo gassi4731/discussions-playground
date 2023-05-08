@@ -15,7 +15,7 @@ jobs:
           path: config.json
       - name: Write Config
         run: |
-          echo "CHANNELS=${{ fromJson(steps.config.outputs.content) }}" >> $GITHUB_ENV
+          echo "CONFIG=${{ fromJson(steps.config.outputs.content) }}" >> $GITHUB_ENV
           
       - name: Get Discussion Action
         run: |
@@ -34,7 +34,8 @@ jobs:
       - name: Set ChannelId(If answerd)
         if: env.ACTION == 'answered'
         run: |
-          echo "CHANNELID=${{ $CHANNELS['allChannelId'] }}
+          config=${{ fronJson($CONFIG) }}
+          echo config
       - name: Set ChannelId(Not answerd)
         if: env.ACTION != 'answered'
         run: |
