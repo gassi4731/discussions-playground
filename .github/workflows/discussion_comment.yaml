@@ -1,0 +1,14 @@
+name: CI
+
+on:
+  discussion_comment:
+    types: [created]
+
+jobs:
+  discussion_commented:
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.comment && github.event.discussion.state == 'open' }}
+    steps:
+      - name: comment
+        run: |
+          echo "commented"
