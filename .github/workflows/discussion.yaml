@@ -1,4 +1,4 @@
-name: CI
+name: DiscussionNotification
 
 on:
   discussion:
@@ -15,6 +15,13 @@ jobs:
           echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
           echo "DISCUSSION_BODY=${{ github.event.discussion.body }}" >> $GITHUB_ENV
           echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
+      - name: get_answer_info
+        if: github.event.action == "answered"
+        run: |
+          echo "ANSWER_ANSWER_URL=${{ github.event.answer.html_url }}" >> $GITHUB_ENV 
+          echo "ANSWER_TITLE=${{ github.event.answer.title }}" >> $GITHUB_ENV
+          echo "ANSWER_BODY=${{ github.event.answer.body }}" >> $GITHUB_ENV
+          echo "ANSWER_USER_NAME=${{ github.event.answer.user.login }}" >> $GITHUB_ENV
       - name: output
         run: |
           echo $ACTION
@@ -22,3 +29,7 @@ jobs:
           echo $DISCUSSION_TITLE
           echo $DISCUSSION_BODY
           echo $DISCUSSION_USER_NAME
+          echo $ANSWER_ANSWER_URL
+          echo $ANSWER_TITLE
+          echo $ANSWER_BODY
+          echo $ANSWER_USER_NAME
