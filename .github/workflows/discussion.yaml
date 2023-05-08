@@ -34,7 +34,7 @@ jobs:
       - name: Set ChannelId(If answerd)
         if: env.ACTION == 'answered'
         run: |
-          config=${{ fronJson($CONFIG) }}
+          config=${{ fromJson($CONFIG) }}
           echo config
       - name: Set ChannelId(Not answerd)
         if: env.ACTION != 'answered'
