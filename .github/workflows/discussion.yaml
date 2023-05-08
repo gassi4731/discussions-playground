@@ -5,31 +5,27 @@ on:
     types: [created, answered]
 
 jobs:
-  discussion_created:
+  get_discussion_information:
     runs-on: ubuntu-22.04
     steps:
-      - name: get_discussion_info
+      - name: discussion
         run: |
           echo "ACTION=${{ github.event.action }}" >> $GITHUB_ENV
           echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
           echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
           echo "DISCUSSION_BODY=${{ github.event.discussion.body }}" >> $GITHUB_ENV
           echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
-      - name: get_answer_info
+      - name: answer
         if: env.ACTION == 'answered'
         run: |
           echo "ANSWER_ANSWER_URL=${{ github.event.answer.html_url }}" >> $GITHUB_ENV 
           echo "ANSWER_TITLE=${{ github.event.answer.title }}" >> $GITHUB_ENV
           echo "ANSWER_BODY=${{ github.event.answer.body }}" >> $GITHUB_ENV
           echo "ANSWER_USER_NAME=${{ github.event.answer.user.login }}" >> $GITHUB_ENV
-      - name: output
+  set_channel_id:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: load_json_file
         run: |
-          echo $ACTION
-          echo $DISCUSSION_URL
-          echo $DISCUSSION_TITLE
-          echo $DISCUSSION_BODY
-          echo $DISCUSSION_USER_NAME
-          echo $ANSWER_ANSWER_URL
-          echo $ANSWER_TITLE
-          echo $ANSWER_BODY
-          echo $ANSWER_USER_NAME
+          data=$(cat ./config.json | jq -r .title)
+          echo "${{data}}"
