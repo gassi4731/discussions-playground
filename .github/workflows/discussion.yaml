@@ -41,5 +41,6 @@ jobs:
           path: config.json
       - name: output
         run: |
-          echo "${{ steps.config.outputs.content.allChannelId }}"
+          echo "${{ steps.config.outputs.content }}"
+          echo "${{ steps.config.outputs.content['allChannelId'] }}"
           
