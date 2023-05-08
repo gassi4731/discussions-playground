@@ -34,12 +34,11 @@ jobs:
       - name: Set ChannelId(If answerd)
         if: env.ACTION == 'answered'
         run: |
-          config=${{ fromJson(env.CONFIG) }}
-          echo config
+          echo "CHANNELID=${{ fromJson(env.CONFIG)['allChannelId'] }}
       - name: Set ChannelId(Not answerd)
         if: env.ACTION != 'answered'
         run: |
-          echo "CHANNELID=${{ env.CONFIG['instructorChannelId'] }}
+          echo "CHANNELID=${{ fromJson(env.CONFIG)['instructorChannelId'] }}
       
       - name: output
         run: |
