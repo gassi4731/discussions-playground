@@ -5,7 +5,7 @@ on:
     types: [created, answered]
 
 jobs:
-  get_discussion_information:
+  get_information:
     runs-on: ubuntu-22.04
     steps:
       - name: discussion
@@ -19,15 +19,27 @@ jobs:
         if: env.ACTION == 'answered'
         run: |
           echo "ANSWER_ANSWER_URL=${{ github.event.answer.html_url }}" >> $GITHUB_ENV 
-          echo "ANSWER_TITLE=${{ github.event.answer.title }}" >> $GITHUB_ENV
           echo "ANSWER_BODY=${{ github.event.answer.body }}" >> $GITHUB_ENV
           echo "ANSWER_USER_NAME=${{ github.event.answer.user.login }}" >> $GITHUB_ENV
+      - name: output
+        run: |
+          echo $ACTION
+          echo $DISCUSSION_URL
+          echo $DISCUSSION_TITLE
+          echo $DISCUSSION_BODY
+          echo $DISCUSSION_USER_NAME
+          echo $ANSWER_ANSWER_URL
+          echo $ANSWER_BODY
+          echo $ANSWER_USER_NAME
   set_channel_id:
     runs-on: ubuntu-22.04
     steps:
-      - name: load_json_file
+      - name: Read config.json
+        id: config
+        uses: jaywcjlove/github-action-read-file@main
+        with:
+          path: config.json
+      - name: output
         run: |
-          channel_config=`cat ./config.json`
-          channel_config="${channel_config//'%'/'%25'}"
-          channel_config="${channel_config//$'\n'/'%0A'}"
-          channel_config="${channel_config//$'\r'/'%0D'}"
+          echo "${{ steps.package.outputs.content }}"
+          
