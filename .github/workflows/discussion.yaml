@@ -27,5 +27,9 @@ jobs:
     steps:
       - name: load_json_file
         run: |
-          channel_config=$(cat ./config.json | jq -r .title)
+          channel_config=`cat ./config.json`
+          channel_config="${channel_config//'%'/'%25'}"
+          channel_config="${channel_config//$'\n'/'%0A'}"
+          channel_config="${channel_config//$'\r'/'%0D'}"
+          channel_config="${fromJson(channel_config)}
           echo "${{channel_config}}"
