@@ -10,4 +10,4 @@ jobs:
     steps:
       - name: comment
         run: |
-          echo github.event.discussion.action
+          echo "${{ github.event.discussion.action }}"
