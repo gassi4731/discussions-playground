@@ -13,7 +13,7 @@ jobs:
         uses: jaywcjlove/github-action-read-file@main
         with:
           path: config.json
-          
+
       - name: Get Discussion Action
         run: |
           echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
@@ -35,10 +35,35 @@ jobs:
               "attachments": [
                   {
                     "mrkdwn_in": ["text"],
-                      "pretext": "<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:",
+                      "color": "#36a64f",
+                      "pretext": "Optional pre-text that appears above the attachment block",
+                      "author_name": "author_name",
+                      "author_link": "http://flickr.com/bobby/",
+                      "author_icon": "https://placeimg.com/16/16/people",
                       "title": "${{ env.DISCUSSION_TITLE }}",
                       "title_link": "${{ env.DISCUSSION_URL }}",
                       "text": "${{ env.DISCUSSION_BODY }}",
+                      "fields": [
+                          {
+                              "title": "A field's title",
+                              "value": "This field's value",
+                              "short": false
+                          },
+                          {
+                              "title": "A short field's title",
+                              "value": "A short field's value",
+                              "short": true
+                          },
+                          {
+                              "title": "A second short field's title",
+                              "value": "A second short field's value",
+                              "short": true
+                          }
+                      ],
+                      "thumb_url": "http://placekitten.com/g/200/200",
+                      "footer": "footer",
+                      "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+                      "ts": 123456789
                   }
               ]
             }
