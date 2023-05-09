@@ -6,7 +6,7 @@ on:
 
 jobs:
   discussion:
-    if: github.event.discussion.category.name == "Q&A"
+    if: github.event.discussion.category.name == "Q\&A"
     runs-on: ubuntu-22.04
     steps:
       - name: Read config.json
