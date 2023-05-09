@@ -36,10 +36,7 @@ jobs:
                   {
                     "mrkdwn_in": ["text"],
                       "color": "#36a64f",
-                      "pretext": "Optional pre-text that appears above the attachment block",
-                      "author_name": "author_name",
-                      "author_link": "http://flickr.com/bobby/",
-                      "author_icon": "https://placeimg.com/16/16/people",
+                      "pretext": "<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:",
                       "title": "${{ env.DISCUSSION_TITLE }}",
                       "title_link": "${{ env.DISCUSSION_URL }}",
                       "text": "${{ env.DISCUSSION_BODY }}",
