@@ -40,7 +40,7 @@ jobs:
                   {
                     "mrkdwn_in": ["text"],
                       "color": "#f1c40f",
-                      "pretext": "<@${{ env.USERID }}>\n:white_check_mark: *質問に新しい回答が投稿されました* :white_check_mark:",
+                      "pretext": "<@${{ env.USERID }}>\n:white_check_mark: *投稿に新しいコメントがつきました* :white_check_mark:",
                       "title": "${{ env.DISCUSSION_TITLE }}",
                       "title_link": "${{ env.DISCUSSION_URL }}",
                       "text": "${{ env.COMMENT_BODY }}"
