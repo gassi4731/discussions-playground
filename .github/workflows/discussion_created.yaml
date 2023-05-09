@@ -19,12 +19,6 @@ jobs:
         run: |
           echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['instructorChannelId'] }}" >> $GITHUB_ENV
       
-      - name: Replace Discussion Body
-        run: |
-          content=github.event.discussion.body
-          sed -z "s/\n/content/g"
-          echo "DISCUSSION_BODY=${{ content }}" >> $GITHUB_ENV
-      
       - name: Send GitHub Action trigger data to Slack workflow
         id: slack
         uses: slackapi/slack-github-action@v1.16.0
@@ -39,7 +33,7 @@ jobs:
                   "pretext": "<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:",
                   "title": "${{ env.DISCUSSION_TITLE }}",
                   "title_link": "${{ env.DISCUSSION_URL }}",
-                  "text": "${{　env.DISCUSSION_BODY }}"
+                  "text": "${{　 `sed -z "s/\n/env.DISCUSSION_BODY/g"` }}"
                 }
               ]
             }
@@ -47,4 +41,5 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           DISCUSSION_URL: ${{ github.event.discussion.html_url }}
           DISCUSSION_TITLE: ${{ github.event.discussion.title }}
+          DISCUSSION_BODY: ${{ github.event.discussion.body }}
           DISCUSSION_USER_NAME: ${{ github.event.discussion.user.login }}
