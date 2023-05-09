@@ -14,13 +14,6 @@ jobs:
         uses: jaywcjlove/github-action-read-file@main
         with:
           path: config.json
-
-      - name: Get Discussion Action
-        run: |
-          echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
-          echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
-          echo "DISCUSSION_BODY=${{ github.event.discussion.body }}" >> $GITHUB_ENV
-          echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
       
       - name: Set ChannelId
         run: |
@@ -46,3 +39,7 @@ jobs:
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          DISCUSSION_URL: ${{ github.event.discussion.html_url }}
+          DISCUSSION_TITLE: ${{ github.event.discussion.title }}
+          DISCUSSION_BODY: ${{ github.event.discussion.body }}
+          DISCUSSION_USER_NAME: ${{ github.event.discussion.user.login }}
