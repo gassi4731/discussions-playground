@@ -22,11 +22,12 @@ jobs:
           echo "COMMENT_BODY=${{ github.event.comment.body }}" >> $GITHUB_ENV
           echo "COMMENT_USER_NAME=${{ github.event.comment.user.login }}" >> $GITHUB_ENV
       
-      - name: Set ChannelId（trainees）
-        if: env.COMMENT_USER_NAME != 'ajj-k' && env.COMMENT_USER_NAME != 'tsuyuni'
+      - name: Set ChannelId & UserId（trainees）
+        if: env.DISCUSSION_USER_NAME != 'ajj-k' && env.DISCUSSION_USER_NAME != 'tsuyuni'
         run: |
-          echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['traineesChannelIds'][env.COMMENT_USER_NAME] }}" >> $GITHUB_ENV
-          echo env.CHANNELID
+          config=${{ fromJson(steps.config.outputs.content) }}
+          echo "CHANNELID=${{ config['trainees'][env.DISCUSSION_USER_NAME]['channelId'] }}" >> $GITHUB_ENV
+          echo "USERID=${{ config['trainees'][env.DISCUSSION_USER_NAME]['userId'] }}" >> $GITHUB_ENV
       
       - name: Send to Slack（trainees）
         id: slack_trainees
@@ -40,10 +41,10 @@ jobs:
                   {
                     "mrkdwn_in": ["text"],
                       "color": "#f1c40f",
-                      "pretext": "<>\n:white_check_mark: *質問に新しい回答が投稿されました* :white_check_mark:",
+                      "pretext": "<@${{ env.USERID }}>\n:white_check_mark: *質問に新しい回答が投稿されました* :white_check_mark:",
                       "title": "${{ env.DISCUSSION_TITLE }}",
                       "title_link": "${{ env.DISCUSSION_URL }}",
-                      "text": "${{ env.DISCUSSION_BODY }}"
+                      "text": "${{ env.COMMENT_BODY }}"
                   }
               ]
             }
