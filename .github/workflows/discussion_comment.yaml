@@ -25,9 +25,8 @@ jobs:
       - name: Set ChannelId & UserId（trainees）
         if: env.DISCUSSION_USER_NAME != 'ajj-k' && env.DISCUSSION_USER_NAME != 'tsuyuni'
         run: |
-          config=${{ fromJson(steps.config.outputs.content) }}
-          echo "CHANNELID=${{ config['trainees'][env.DISCUSSION_USER_NAME]['channelId'] }}" >> $GITHUB_ENV
-          echo "USERID=${{ config['trainees'][env.DISCUSSION_USER_NAME]['userId'] }}" >> $GITHUB_ENV
+          echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['trainees'][env.DISCUSSION_USER_NAME]['channelId'] }}" >> $GITHUB_ENV
+          echo "USERID=${{ fromJson(steps.config.outputs.content)['trainees'][env.DISCUSSION_USER_NAME]['userId'] }}" >> $GITHUB_ENV
       
       - name: Send to Slack（trainees）
         id: slack_trainees
