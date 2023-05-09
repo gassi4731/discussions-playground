@@ -31,5 +31,5 @@ jobs:
           pretext="<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:"
           curl -H "Content-type: application/json" \
           --data '{"channel":"C05243U3NAF","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"Hi I am a bot that can post *_fancy_* messages to any public channel."}}]}' \
-          -H "Authorization: Bearer xoxb-4960072556352-5069366047717-lcNYdazgB1JMycO324x85zTL" \
+          -H "Authorization: Bearer xoxb-4960072556352-5069366047717-MhQd5hdiwDy79tAM0DOu9ccw" \
           -X POST https://slack.com/api/chat.postMessage
