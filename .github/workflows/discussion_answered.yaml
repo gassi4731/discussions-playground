@@ -47,7 +47,7 @@ jobs:
                             "title": "Answer",
                             "value": "${{ env.DISCUSSION_ANSER_BODY }}",
                             "short": false
-                        },
+                        }
                       ]
                   }
               ]
