@@ -2,7 +2,7 @@ name: DiscussionNotification
 
 on:
   discussion:
-    types: [created, answered]
+    types: [created]
 
 jobs:
   discussion:
@@ -16,29 +16,20 @@ jobs:
           
       - name: Get Discussion Action
         run: |
-          echo "ACTION=${{ github.event.action }}" >> $GITHUB_ENV
           echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
           echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
           echo "DISCUSSION_BODY=${{ github.event.discussion.body }}" >> $GITHUB_ENV
           echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
-      - name: Get Answer Action
-        if: env.ACTION == 'answered'
-        run: |
-          echo "ANSWER_ANSWER_URL=${{ github.event.answer.html_url }}" >> $GITHUB_ENV 
-          echo "ANSWER_BODY=${{ github.event.answer.body }}" >> $GITHUB_ENV
-          echo "ANSWER_USER_NAME=${{ github.event.answer.user.login }}" >> $GITHUB_ENV
       
-      - name: Set ChannelId(If answerd)
-        if: env.ACTION == 'answered'
-        run: |
-          echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['allChannelId'] }}" >> $GITHUB_ENV
-      - name: Set ChannelId(Not answerd)
-        if: env.ACTION != 'answered'
+      - name: Set ChannelId
         run: |
           echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['instructorChannelId'] }}" >> $GITHUB_ENV
       
-      - name: output
+      - name: Send Message
+        if: env.ACTION != 'answered'
         run: |
-          echo $ACTION
-          echo $CHANNELID
-
+          pretext="<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:"
+          curl -H "Content-type: application/json" \
+--data '{"channel":"C05243U3NAF","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"Hi I am a bot that can post *_fancy_* messages to any public channel."}}]}' \
+-H "Authorization: Bearer xoxb-4960072556352-5069366047717-lcNYdazgB1JMycO324x85zTL" \
+-X POST https://slack.com/api/chat.postMessage
