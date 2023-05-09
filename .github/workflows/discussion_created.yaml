@@ -1,0 +1,46 @@
+name: DiscussionNotification
+
+on:
+  discussion:
+    types: [created]
+
+jobs:
+  discussion:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Read config.json
+        id: config
+        uses: jaywcjlove/github-action-read-file@main
+        with:
+          path: config.json
+          
+      - name: Get Discussion Action
+        run: |
+          echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
+          echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
+          echo "DISCUSSION_BODY=${{ github.event.discussion.body }}" >> $GITHUB_ENV
+          echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
+      
+      - name: Set ChannelId
+        run: |
+          echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['instructorChannelId'] }}" >> $GITHUB_ENV
+      
+      - name: Send GitHub Action trigger data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.16.0
+        with:
+          channel-id: "${{ env.CHANNELID }}"
+          payload: |
+            {
+              "attachments": [
+                  {
+                    "mrkdwn_in": ["text"],
+                      "pretext": "<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:",
+                      "title": "${{ env.DISCUSSION_TITLE }}",
+                      "title_link": "${{ env.DISCUSSION_URL }}",
+                      "text": "${{ env.DISCUSSION_BODY }}",
+                  }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
