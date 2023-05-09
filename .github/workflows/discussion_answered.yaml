@@ -1,4 +1,4 @@
-name: DiscussionNotification
+name: DiscussionNotification(answered)
 
 on:
   discussion:
@@ -38,7 +38,7 @@ jobs:
                   {
                     "mrkdwn_in": ["text"],
                       "color": "#36a64f",
-                      "pretext": "<@here>\n:tada: 質問が回答されました:tada: ",
+                      "pretext": "<!here>\n:tada: 質問が回答されました:tada: ",
                       "title": "${{ env.DISCUSSION_TITLE }}",
                       "title_link": "${{ env.DISCUSSION_URL }}",
                       "text": "${{ env.DISCUSSION_BODY }}\n",
