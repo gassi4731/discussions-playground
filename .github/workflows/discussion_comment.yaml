@@ -1,14 +1,51 @@
-name: CI
+name: DiscussionNotification(comment)
 
 on:
   discussion_comment:
     types: [created]
 
 jobs:
-  discussion_commented:
+  discussion:
     runs-on: ubuntu-22.04
-    if: ${{ github.event.comment && github.event.discussion.state == 'open' }}
     steps:
-      - name: comment
+      - name: Read config.json
+        id: config
+        uses: jaywcjlove/github-action-read-file@main
+        with:
+          path: config.json
+
+      - name: Get Discussion Action
         run: |
-          echo "commented"
+          echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
+          echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
+          echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
+          echo "COMMENT_BODY=${{ github.event.comment.body }}" >> $GITHUB_ENV
+          echo "COMMENT_USER_NAME=${{ github.event.comment.user.login }}" >> $GITHUB_ENV
+      
+      - name: Set ChannelId（trainees）
+        if: env.COMMENT_USER_NAME != 'ajj-k' && env.COMMENT_USER_NAME != 'tsuyuni'
+        run: |
+          echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['traineesChannelIds'][env.COMMENT_USER_NAME] }}" >> $GITHUB_ENV
+          echo env.CHANNELID
+      
+      - name: Send to Slack（trainees）
+        id: slack_trainees
+        if: env.COMMENT_USER_NAME != 'ajj-k' && env.COMMENT_USER_NAME != 'tsuyuni'
+        uses: slackapi/slack-github-action@v1.16.0
+        with:
+          channel-id: "${{ env.CHANNELID }}"
+          payload: |
+            {
+              "attachments": [
+                  {
+                    "mrkdwn_in": ["text"],
+                      "color": "#f1c40f",
+                      "pretext": "<>\n:white_check_mark: *質問に新しい回答が投稿されました* :white_check_mark:",
+                      "title": "${{ env.DISCUSSION_TITLE }}",
+                      "title_link": "${{ env.DISCUSSION_URL }}",
+                      "text": "${{ env.DISCUSSION_BODY }}"
+                  }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
