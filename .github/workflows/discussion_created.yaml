@@ -9,12 +9,6 @@ jobs:
     if: github.event.discussion.category.name == 'Q&A'
     runs-on: ubuntu-22.04
     steps:
-      - name: Test
-        run: |
-          echo "${{ github.event.discussion }}"
-          echo "${{ fromJson(github.event.discussion) }}"
-          echo "${{ toJson(github.event.discussion) }}"
-          
       - name: Read config.json
         id: config
         uses: jaywcjlove/github-action-read-file@main
@@ -23,6 +17,8 @@ jobs:
       
       - name: Set ChannelId
         run: |
+          echo "${{ github.event.discussion.body }}"
+          echo "${{ fromJson(github.event.discussion.body) }}"
           echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['instructorChannelId'] }}" >> $GITHUB_ENV
       
       - name: Send GitHub Action trigger data to Slack workflow
