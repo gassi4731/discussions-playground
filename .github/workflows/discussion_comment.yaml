@@ -28,6 +28,15 @@ jobs:
           echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['trainees'][env.DISCUSSION_USER_NAME]['channelId'] }}" >> $GITHUB_ENV
           echo "USERID=${{ fromJson(steps.config.outputs.content)['trainees'][env.DISCUSSION_USER_NAME]['userId'] }}" >> $GITHUB_ENV
       
+      - name: comment_body
+        id: comment_body
+        run: |
+          comment_body="${{ github.event.comment.body }}"
+          comment_body="${comment_body//$'\n'/\\n}"
+          comment_body="${comment_body//$'\r'/\\r}" 
+          echo $comment_body
+          echo "::set-output name=std_out::$comment_body"
+      
       - name: Send to Slack（trainees）
         id: slack_trainees
         if: env.COMMENT_USER_NAME != 'ajj-k' && env.COMMENT_USER_NAME != 'tsuyuni'
@@ -43,9 +52,13 @@ jobs:
                       "pretext": "<@${{ env.USERID }}>\n:white_check_mark: *投稿に新しいコメントがつきました* :white_check_mark:",
                       "title": "${{ env.DISCUSSION_TITLE }}",
                       "title_link": "${{ env.DISCUSSION_URL }}",
-                      "text": "${{ env.COMMENT_BODY }}"
+                      "text": "${{ steps.comment_body.outputs.std_out }}"
                   }
               ]
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          DISCUSSION_URL: ${{ github.event.discussion.html_url }}
+          DISCUSSION_TITLE: ${{ github.event.discussion.title }}
+          DISCUSSION_USER_NAME: ${{ github.event.discussion.user.login }}
+          COMMENT_USER_NAME: ${{ github.event.comment.user.login }}
