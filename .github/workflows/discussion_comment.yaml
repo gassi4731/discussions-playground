@@ -13,14 +13,6 @@ jobs:
         uses: jaywcjlove/github-action-read-file@main
         with:
           path: config.json
-
-      - name: Get Discussion Action
-        run: |
-          echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
-          echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
-          echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
-          echo "COMMENT_BODY=${{ github.event.comment.body }}" >> $GITHUB_ENV
-          echo "COMMENT_USER_NAME=${{ github.event.comment.user.login }}" >> $GITHUB_ENV
       
       - name: Set ChannelId & UserId（trainees）
         if: env.DISCUSSION_USER_NAME != 'ajj-k' && env.DISCUSSION_USER_NAME != 'tsuyuni'
