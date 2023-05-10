@@ -26,7 +26,7 @@ jobs:
                 {
                   'mrkdwn_in': ['text'],
                   'color": '#f1c40f',
-                  'pretext": '<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:,
+                  'pretext": '\<\@U04TBP40V62\>\<\@U04TJEBURV0\>\<\@U054EJH9Y85\>\n:rocket: *新しい質問が投稿されました* :rocket:,
                   'title': "${{ env.DISCUSSION_TITLE }}",
                   'title_link': "${{ env.DISCUSSION_URL }}",
                   'text': "${{　 toJson(env.DISCUSSION)['body'] }}"
