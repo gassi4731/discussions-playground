@@ -14,18 +14,28 @@ jobs:
         uses: jaywcjlove/github-action-read-file@main
         with:
           path: config.json
-
-      - name: Get Discussion Action
-        run: |
-          echo "DISCUSSION_URL=${{ github.event.discussion.html_url }}" >> $GITHUB_ENV
-          echo "DISCUSSION_TITLE=${{ github.event.discussion.title }}" >> $GITHUB_ENV
-          echo "DISCUSSION_BODY=${{ github.event.discussion.body }}" >> $GITHUB_ENV
-          echo "DISCUSSION_USER_NAME=${{ github.event.discussion.user.login }}" >> $GITHUB_ENV
-          echo "DISCUSSION_ANSER_BODY=${{ github.event.answer.body }}" >> $GITHUB_ENV
       
       - name: Set ChannelId
         run: |
           echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['instructorChannelId'] }}" >> $GITHUB_ENV
+      
+      - name: Discussion Body
+        id: discussion_body
+        run: |
+          discussion_body="${{ github.event.discussion.body }}"
+          discussion_body="${discussion_body//$'\n'/\\n}"
+          discussion_body="${discussion_body//$'\r'/\\r}" 
+          echo $discussion_body
+          echo "::set-output name=std_out::$discussion_body"
+          
+      - name: Answer Body
+        id: answer_body
+        run: |
+          answer_body="${{ github.event.answer.body }}"
+          answer_body="${answer_body//$'\n'/\\n}"
+          answer_body="${answer_body//$'\r'/\\r}" 
+          echo $discussion_body
+          echo "::set-output name=std_out::$answer_body"
       
       - name: Send GitHub Action trigger data to Slack workflow
         id: slack
@@ -41,11 +51,11 @@ jobs:
                       "pretext": "<!here>\n:tada: 質問が回答されました:tada: ",
                       "title": "${{ env.DISCUSSION_TITLE }}",
                       "title_link": "${{ env.DISCUSSION_URL }}",
-                      "text": "${{ env.DISCUSSION_BODY }}\n",
+                      "text": "${{ steps.discussion_body.outputs.std_out }}\n",
                       "fields": [
                         {
                             "title": "Answer",
-                            "value": "${{ env.DISCUSSION_ANSER_BODY }}",
+                            "value": "${{ steps.answer_body.outputs.std_out }}",
                             "short": false
                         }
                       ]
@@ -54,3 +64,6 @@ jobs:
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          DISCUSSION_URL: ${{ github.event.discussion.html_url }}
+          DISCUSSION_TITLE: ${{ github.event.discussion.title }}
+          DISCUSSION_USER_NAME: ${{ github.event.discussion.user.login }}
