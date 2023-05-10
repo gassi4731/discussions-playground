@@ -19,6 +19,14 @@ jobs:
         run: |
           echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['instructorChannelId'] }}" >> $GITHUB_ENV
       
+      - name: discussion_body
+        id: discussion_body
+        run: |
+          discussion_body="${{ github.event.discussion.body }}"
+          discussion_body="${discussion_body//$'\n'/\\n}"
+          echo $discussion_body
+          echo "::set-output name=std_out::$discussion_body"
+      
       - name: Send GitHub Action trigger data to Slack workflow
         id: slack
         uses: slackapi/slack-github-action@v1.16.0
@@ -33,7 +41,7 @@ jobs:
                   "pretext": "<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:",
                   "title": "${{ env.DISCUSSION_TITLE }}",
                   "title_link": "${{ env.DISCUSSION_URL }}",
-                  "text": "${{　 env.DISCUSSION_BODY//$'\n'/\\n }}"
+                  "text": "${{　 steps.discussion_body.outputs.std_out }}"
                 }
               ]
             }
@@ -41,5 +49,4 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           DISCUSSION_URL: ${{ github.event.discussion.html_url }}
           DISCUSSION_TITLE: ${{ github.event.discussion.title }}
-          DISCUSSION_BODY: ${{ github.event.discussion.body }}
           DISCUSSION_USER_NAME: ${{ github.event.discussion.user.login }}
