@@ -17,7 +17,7 @@ jobs:
       
       - name: Set ChannelId
         run: |
-          echo "${{ fromJson(github.event.discussion.body) }}"
+          echo "${{ fromJson(github.event.discussion) }}"
           echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['instructorChannelId'] }}" >> $GITHUB_ENV
       
       - name: Send GitHub Action trigger data to Slack workflow
