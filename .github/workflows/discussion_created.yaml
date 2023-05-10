@@ -25,18 +25,18 @@ jobs:
         with:
           channel-id: "${{ env.CHANNELID }}"
           payload: |
-            "${{ "{
-              "attachments": [
+            "${{ '{
+              'attachments': [
                 {
-                  "mrkdwn_in": ["text"],
-                  "color": "#f1c40f",
-                  "pretext": "<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:",
-                  "title": "${{ env.DISCUSSION_TITLE }}",
-                  "title_link": "${{ env.DISCUSSION_URL }}",
-                  "text": "${{　 env.DISCUSSION_BODY }}"
+                  'mrkdwn_in': ['text'],
+                  'color": '#f1c40f',
+                  'pretext": '<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:,
+                  'title': ${{ env.DISCUSSION_TITLE }},
+                  'title_link': ${{ env.DISCUSSION_URL }},
+                  'text': ${{　 env.DISCUSSION_BODY }}
                 }
               ]
-            }" | jq }}"
+            }' | jq }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           DISCUSSION_URL: ${{ github.event.discussion.html_url }}
