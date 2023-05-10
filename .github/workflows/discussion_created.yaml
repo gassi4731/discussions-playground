@@ -17,7 +17,6 @@ jobs:
       
       - name: Set ChannelId
         run: |
-          echo "${{ github.event.discussion.body }}"
           echo "${{ fromJson(github.event.discussion.body) }}"
           echo "CHANNELID=${{ fromJson(steps.config.outputs.content)['instructorChannelId'] }}" >> $GITHUB_ENV
       
