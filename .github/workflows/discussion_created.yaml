@@ -25,7 +25,7 @@ jobs:
         with:
           channel-id: "${{ env.CHANNELID }}"
           payload: |
-            "${{ {
+            "${{ "{
               "attachments": [
                 {
                   "mrkdwn_in": ["text"],
@@ -36,7 +36,7 @@ jobs:
                   "text": "${{　 env.DISCUSSION_BODY }}"
                 }
               ]
-            } | jq }}"
+            }" | jq }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           DISCUSSION_URL: ${{ github.event.discussion.html_url }}
