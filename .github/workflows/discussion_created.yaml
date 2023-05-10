@@ -23,9 +23,9 @@ jobs:
         id: discussion_body
         run: |
           discussion_body="${{ github.event.discussion.body }}"
-          discussion_body="${discussion_body//'%'/'%25'}"
-          discussion_body="${discussion_body//$'\n'/'%0A'}"
-          discussion_body="${discussion_body//$'\r'/'%0D'}" 
+          discussion_body="${discussion_body//'%'/'\%'}"
+          discussion_body="${discussion_body//$'\n'/\n}"
+          discussion_body="${discussion_body//$'\r'/\n}" 
           echo $discussion_body
           echo "::set-output name=std_out::$discussion_body"
       
