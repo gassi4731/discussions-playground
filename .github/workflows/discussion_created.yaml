@@ -25,20 +25,21 @@ jobs:
         with:
           channel-id: "${{ env.CHANNELID }}"
           payload: |
-            "${{ '{
+            {
               'attachments': [
                 {
                   'mrkdwn_in': ['text'],
                   'color": '#f1c40f',
                   'pretext": '<@U04TBP40V62><@U04TJEBURV0><@U054EJH9Y85>\n:rocket: *新しい質問が投稿されました* :rocket:,
-                  'title': ${{ env.DISCUSSION_TITLE }},
-                  'title_link': ${{ env.DISCUSSION_URL }},
-                  'text': ${{　 env.DISCUSSION_BODY }}
+                  'title': "${{ env.DISCUSSION_TITLE }}",
+                  'title_link': "${{ env.DISCUSSION_URL }}",
+                  'text': "${{　 toJson(env.DISCUSSION)['body'] }}"
                 }
               ]
-            }' | jq }}"
+            }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          DISCUSSION: ${{ github.event.discussion.html_url }}
           DISCUSSION_URL: ${{ github.event.discussion.html_url }}
           DISCUSSION_TITLE: ${{ github.event.discussion.title }}
           DISCUSSION_BODY: ${{ github.event.discussion.body }}
