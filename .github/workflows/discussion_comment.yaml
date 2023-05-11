@@ -25,8 +25,8 @@ jobs:
       - name: comment_body
         id: comment_body
         run: |
-          comment={ 'body': ${{ github.event.comment.body }} }
-          comment_body="$( comment | jq .body )"
+          comment="{ 'body': ${{ github.event.comment.body }} }"
+          comment_body="$( toJson(comment) | jq .body )"
           cat $comment_body
           comment_body="${comment_body//$'\n'/\\n}"
           comment_body="${comment_body//$'\r'/\\r}" 
