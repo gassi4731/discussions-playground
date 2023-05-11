@@ -27,6 +27,8 @@ jobs:
         run: |
           comment="{'body': ${{ github.event.comment.body }} }"
           comment_body="$( comment | jq .body )"
+          comment_body="${comment_body//$'\n'/\\n}"
+          comment_body="${comment_body//$'\r'/\\r}" 
           echo $comment_body
           echo "::set-output name=std_out::$comment_body"
       
