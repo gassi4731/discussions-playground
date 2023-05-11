@@ -26,7 +26,7 @@ jobs:
         id: comment_body
         run: |
           comment="{'body': ${{ github.event.comment.body }} }"
-          comment_body=${{ comment | jq .body }}
+          comment_body="${ comment | jq .body }"
           echo $comment_body
           echo "::set-output name=std_out::$comment_body"
       
