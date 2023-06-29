@@ -22,7 +22,7 @@ jobs:
       - name: Check if pr exists
         id: check_pr
         run: |
-          echo "::set-output name=count::$(gh pr list -base main | wc -l)"
+          echo "::set-output name=count::$(gh pr list -B main | wc -l)"
 
       - name: Fetch base branch
         run: git fetch origin ${base_branch}:${base_branch}
@@ -42,6 +42,12 @@ jobs:
           
       # リリース用PRを作成
       - name: Create release pr
+        if: ${{ steps.check_pr.outputs.count == 0 }}
         run: |
           gh pr create -B ${base_branch} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
+          
+      - name: Update release pr
+        if: ${{ steps.check_pr.outputs.count == 0 }}
+        run: |
+          gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
           
