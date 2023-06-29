@@ -1,53 +1,29 @@
-name: Create a pull request for release.
+name: Create Pull Request to Main
 
 on:
   push:
-    branches: [ staging ]
+    branches:
+      - staging
 
 jobs:
-  create-release-pr:
+  create_pull_request:
     runs-on: ubuntu-latest
 
-    env:
-      base_branch: main
-      head_branch: staging
-      GH_TOKEN: ${{ secrets.GH_CUSTOM_TOKEN }}
-
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      # リリース用PRが既に存在するかどうかをチェック
-      - name: Check if pr exists
+      - name: Check for existing Pull Request
         id: check_pr
         run: |
-          echo "::set-output name=count::$(gh pr list -B main | wc -l)"
+          pr_list=$(gh pr list --base main --head staging --json title,body,number)
+          echo "::set-output name=pr_list::$pr_list"
 
-      - name: Fetch base branch
-        run: git fetch origin ${base_branch}:${base_branch}
-
-      - name: Run actions using diff_files
-        id: get_diff
+      - name: Create or Update Pull Request
+        id: pr
         run: |
-          diff_files=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
-          echo "::set-output name=diff_files::${diff_files}"
-      
-      - name: Get Time
-        id: time
-        uses: nanzm/get-time-action@master
-        with:
-          timeZone: UTC+8
-          format: 'YYYY-MM-DD-HH-mm-ss'
-          
-      # リリース用PRを作成
-      - name: Create release pr
-        if: ${{ steps.check_pr.outputs.count == 0 }}
-        run: |
-          gh pr create -B ${base_branch} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
-          
-      - name: Update release pr
-        if: ${{ steps.check_pr.outputs.count != 0 }}
-        run: |
-          gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
-          
+          timestamp=$(date +"%Y-%m-%d %T")
+          diff=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].title, .[0].body')
+          if [ -z "$diff" ]; then
+            gh pr create --title "RELEASE: $timestamp" --body "$diff"
+          else
+            pr_number=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].number')
+            gh pr update $pr_number --title "RELEASE: $timestamp" --body "$diff"
+          fi
