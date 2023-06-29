@@ -47,7 +47,7 @@ jobs:
           gh pr create -B ${base_branch} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
           
       - name: Update release pr
-        if: ${{ steps.check_pr.outputs.count == 0 }}
+        if: ${{ steps.check_pr.outputs.count != 0 }}
         run: |
           gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
           
