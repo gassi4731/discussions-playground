@@ -49,55 +49,11 @@ jobs:
         if: ${{ steps.check_pr.outputs.count != 0 }}
         run: |
           gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "
-          ### Related PRs
+          ## Related PRs
           変更されたファイルは以下の通りです。
           
           ${{steps.get_diff.outputs.diff_files}}
           
-          ### 注意点
+          ## 注意点
           - コースディレクターの承認を貰ってからmergeしてください。
           "
-          
-
-# name: Create Pull Request to Main
-
-# on:
-#   push:
-#     branches:
-#       - staging
-
-# jobs:
-#   create_pull_request:
-#     runs-on: ubuntu-latest
-    
-#     env:
-#       GH_TOKEN: ${{ secrets.GH_CUSTOM_TOKEN }}
-
-#     steps:
-#       - uses: actions/checkout@v2
-#         with:
-#           fetch-depth: 0
-      
-#       - name: Check if pr exists
-#         id: check_pr
-#         run: |
-#           echo "::set-output name=count::$(gh pr list -B main | wc -l)"
-          
-#       - name: Get Timestamp
-#         id: time
-#         uses: nanzm/get-time-action@master
-#         with:
-#           timeZone: UTC+8
-#           format: 'YYYY-MM-DD-HH-mm-ss'
-
-#       - name: Create or Update Pull Request
-#         id: pr
-#         run: |
-#           diff_files=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
-#           if ${{ steps.check_pr.outputs.count == 0 }}; then
-#             gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff_files}}"
-#           else
-#             pr_list=$(gh pr list --base main --head staging --json title,body,number)
-#             pr_number=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].number')
-#             gh pr edit ${{pr_number}} --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff_files}}"
-#           fi
