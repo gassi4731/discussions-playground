@@ -13,6 +13,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_CUSTOM_TOKEN }}
 
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
       - name: Check for existing Pull Request
         id: check_pr
         run: |
