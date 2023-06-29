@@ -43,5 +43,5 @@ jobs:
       # リリース用PRを作成
       - name: Create release pr
         run: |
-          gh pr create -B ${base_branch} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.}}"
+          gh pr create -B ${base_branch} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
           
