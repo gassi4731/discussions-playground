@@ -10,16 +10,19 @@ jobs:
 
     env:
       base_branch: main
+      head_branch: staging
       GH_TOKEN: ${{ secrets.GH_CUSTOM_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # リリース用PRが既に存在するかどうかをチェック
       - name: Check if pr exists
         id: check_pr
         run: |
-          echo "::set-output name=count::$(gh pr list -base main | wc -l)"
+          echo "::set-output name=count::$(gh pr list -B main | wc -l)"
 
       - name: Fetch base branch
         run: git fetch origin ${base_branch}:${base_branch}
@@ -27,13 +30,30 @@ jobs:
       - name: Run actions using diff_files
         id: get_diff
         run: |
-          diff_files=$(git diff --name-only HEAD ${base_branch} -- "${diff_path}" \
-            | tr "\n" " ")
-          echo "::set-output name=diff_files::${diff_files}"
+          echo "::set-output name=diff_files::$(git diff --name-only origin/main...HEAD  | tr "\n" "," | sed 's/,$//')"
+      
+      - name: Get Time
+        id: time
+        uses: nanzm/get-time-action@master
+        with:
+          timeZone: UTC+8
+          format: 'YYYY-MM-DD-HH-mm-ss'
           
       # リリース用PRを作成
       - name: Create release pr
         if: ${{ steps.check_pr.outputs.count == 0 }}
         run: |
-          gh pr create -B ${base_branch} -t ${{ 'RELEASE: ' + '%Y-%m-%d %H:%M:%S' }} -b ${steps.get_diff.outputs.diff_files}
+          gh pr create -B ${base_branch} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
           
+      - name: Update release pr
+        if: ${{ steps.check_pr.outputs.count != 0 }}
+        run: |
+          gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "
+          ## Related PRs
+          変更されたファイルは以下の通りです。
+          
+          ${{steps.get_diff.outputs.diff_files}}
+          
+          ## 注意点
+          - コースディレクターの承認を貰ってからmergeしてください。
+          "
