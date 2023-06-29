@@ -31,15 +31,15 @@ jobs:
             | tr "\n" " ")
           echo "::set-output name=diff_files::${diff_files}"
       
-      - name: Get current datetime as env variable
-        id: get_datetime
-        env:
-          TZ: 'Asia/Tokyo'
-        run: |
-          echo "::set-output name=current_datetime::$('%Y-%m-%d %H:%M:%S')"
+      - name: Get Time
+        id: time
+        uses: nanzm/get-time-action@master
+        with:
+          timeZone: UTC+8
+          format: 'YYYY-MM-DD-HH-mm-ss'
           
       # リリース用PRを作成
       - name: Create release pr
         run: |
-          gh pr create -B ${base_branch} -t "RELEASE:${{steps.get_datetime.outputs.current_datetime}}" -b ""
+          gh pr create -B ${base_branch} -t "RELEASE:${{steps.time.outputs.time}}" -b ""
           
