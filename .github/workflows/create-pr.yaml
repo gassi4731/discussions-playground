@@ -32,11 +32,11 @@ jobs:
       - name: Create or Update Pull Request
         id: pr
         run: |
-          diff=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
+          diff_files=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
           if ${{ steps.check_pr.outputs.count == 0 }}; then
-            gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff}}"
+            gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff_files}}"
           else
             pr_list=$(gh pr list --base main --head staging --json title,body,number)
             pr_number=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].number')
-            gh pr edit ${{pr_number}} --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff}}"
+            gh pr edit ${{pr_number}} --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff_files}}"
           fi
