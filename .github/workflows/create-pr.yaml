@@ -49,9 +49,7 @@ jobs:
       - name: Update release pr
         if: ${{ steps.check_pr.outputs.count != 0 }}
         run: |
-          pr_list=$(gh pr list --base main --head staging --json number)
-          pr_number=$(echo "${{ pr_list }}" | jq -r '.[0].number')
-          gh pr edit ${{pr_number}} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
+          gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
           
 
 # name: Create Pull Request to Main
