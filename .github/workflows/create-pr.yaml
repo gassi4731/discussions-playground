@@ -33,7 +33,6 @@ jobs:
       - name: Create or Update Pull Request
         id: pr
         run: |
-          timestamp=$(date +"%Y-%m-%d %T")
           diff=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].title, .[0].body')
           if [ -z "$diff" ]; then
             gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "$diff"
