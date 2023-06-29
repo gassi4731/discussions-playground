@@ -30,10 +30,18 @@ jobs:
           diff_files=$(git diff --name-only HEAD ${base_branch} -- "${diff_path}" \
             | tr "\n" " ")
           echo "::set-output name=diff_files::${diff_files}"
+      
+      - name: Get current datetime as env variable
+        id: get_datetime
+        env:
+          TZ: 'Asia/Tokyo'
+        run: |
+          echo "::set-output name=current_datetime::$('%Y-%m-%d %H:%M:%S')"
           
       # リリース用PRを作成
       - name: Create release pr
-        if: ${{ steps.check_pr.outputs.count == 0 }}
+        env:
+          TZ: 'Asia/Tokyo'
         run: |
-          gh pr create -B ${base_branch} -t 'RELEASE:'${{%Y-%m-%d %H:%M:%S}} -b ${{steps.get_diff.outputs.diff_files}}
+          gh pr create -B ${base_branch} -t 'RELEASE:'${{steps.get_datetime.outputs.current_datetime}} -b ${{steps.get_diff.outputs.diff_files}}
           
