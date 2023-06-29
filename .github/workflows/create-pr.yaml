@@ -51,9 +51,8 @@ jobs:
           gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "
           ### Related PRs
           変更されたファイルは以下の通りです。
-          ```
+          
           ${{steps.get_diff.outputs.diff_files}}
-          ```
           
           ### 注意点
           - コースディレクターの承認を貰ってからmergeしてください。
