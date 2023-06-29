@@ -30,7 +30,7 @@ jobs:
       - name: Run actions using diff_files
         id: get_diff
         run: |
-          echo "::set-output name=diff_files::$( git diff --name-only origin/main...HEAD  | tr "\n" "," | sed 's/,$//')"
+          echo "::set-output name=diff_files::$( git diff --name-only origin/main...HEAD  | tr "\n" ",")"
       
       - name: Get Time
         id: time
@@ -48,7 +48,16 @@ jobs:
       - name: Update release pr
         if: ${{ steps.check_pr.outputs.count != 0 }}
         run: |
-          gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "### Related PRs\n 変更されたファイルは以下の通りです。\n```${{steps.get_diff.outputs.diff_files}}```\n ### 注意点\n - コースディレクターの承認を貰ってからmergeしてください。"
+          gh pr edit -t "RELEASE: ${{steps.time.outputs.time}}" -b "
+          ### Related PRs
+          変更されたファイルは以下の通りです。
+          ```
+          ${{steps.get_diff.outputs.diff_files}}
+          ```
+          
+          ### 注意点
+          - コースディレクターの承認を貰ってからmergeしてください。
+          "
           
 
 # name: Create Pull Request to Main
