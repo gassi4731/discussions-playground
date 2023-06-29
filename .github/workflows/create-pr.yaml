@@ -30,8 +30,7 @@ jobs:
       - name: Run actions using diff_files
         id: get_diff
         run: |
-          diff_files=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
-          echo "::set-output name=diff_files::${diff_files}"
+          echo "::set-output name=diff_files::${gh pr diff ${github.event.number} --name-only | tr "\n" " "}"
       
       - name: Get Time
         id: time
