@@ -22,6 +22,13 @@ jobs:
         run: |
           pr_list=$(gh pr list --base main --head staging --json title,body,number)
           echo "::set-output name=pr_list::$pr_list"
+          
+      - name: Get Timestamp
+        id: time
+        uses: nanzm/get-time-action@master
+        with:
+          timeZone: UTC+8
+          format: 'YYYY-MM-DD-HH-mm-ss'
 
       - name: Create or Update Pull Request
         id: pr
@@ -29,8 +36,8 @@ jobs:
           timestamp=$(date +"%Y-%m-%d %T")
           diff=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].title, .[0].body')
           if [ -z "$diff" ]; then
-            gh pr create --title "RELEASE: $timestamp" --body "$diff"
+            gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "$diff"
           else
             pr_number=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].number')
-            gh pr update $pr_number --title "RELEASE: $timestamp" --body "$diff"
+            gh pr edit $pr_number --title "RELEASE: $timestamp" --body "$diff"
           fi
