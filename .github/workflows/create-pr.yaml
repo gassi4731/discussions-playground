@@ -16,12 +16,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
-      - name: Check for existing Pull Request
+      
+      - name: Check if pr exists
         id: check_pr
         run: |
-          pr_list=$(gh pr list --base main --head staging --json title,body,number)
-          echo "::set-output name=pr_list::$pr_list"
+          echo "::set-output name=count::$(gh pr list -B main | wc -l)"
           
       - name: Get Timestamp
         id: time
@@ -33,10 +32,11 @@ jobs:
       - name: Create or Update Pull Request
         id: pr
         run: |
-          diff=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].title, .[0].body')
-          if [ -z "$diff" ]; then
-            gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "$diff"
+          diff=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
+          if ${{ steps.check_pr.outputs.count == 0 }}; then
+            gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff}}"
           else
+            pr_list=$(gh pr list --base main --head staging --json title,body,number)
             pr_number=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].number')
-            gh pr edit $pr_number --title "RELEASE: $timestamp" --body "$diff"
+            gh pr edit ${{pr_number}} --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff}}"
           fi
