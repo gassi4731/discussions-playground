@@ -1,42 +1,98 @@
-name: Create Pull Request to Main
+name: Create a pull request for release.
 
 on:
   push:
-    branches:
-      - staging
+    branches: [ staging ]
 
 jobs:
-  create_pull_request:
+  create-release-pr:
     runs-on: ubuntu-latest
-    
+
     env:
+      base_branch: main
+      head_branch: staging
       GH_TOKEN: ${{ secrets.GH_CUSTOM_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      
+
+      # リリース用PRが既に存在するかどうかをチェック
       - name: Check if pr exists
         id: check_pr
         run: |
           echo "::set-output name=count::$(gh pr list -B main | wc -l)"
-          
-      - name: Get Timestamp
+
+      - name: Fetch base branch
+        run: git fetch origin ${base_branch}:${base_branch}
+
+      - name: Run actions using diff_files
+        id: get_diff
+        run: |
+          diff_files=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
+          echo "::set-output name=diff_files::${diff_files}"
+      
+      - name: Get Time
         id: time
         uses: nanzm/get-time-action@master
         with:
           timeZone: UTC+8
           format: 'YYYY-MM-DD-HH-mm-ss'
-
-      - name: Create or Update Pull Request
-        id: pr
+          
+      # リリース用PRを作成
+      - name: Create release pr
+        if: ${{ steps.check_pr.outputs.count == 0 }}
         run: |
-          diff_files=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
-          if ${{ steps.check_pr.outputs.count == 0 }}; then
-            gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff_files}}"
-          else
-            pr_list=$(gh pr list --base main --head staging --json title,body,number)
-            pr_number=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].number')
-            gh pr edit ${{pr_number}} --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff_files}}"
-          fi
+          gh pr create -B ${base_branch} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
+          
+      - name: Update release pr
+        if: ${{ steps.check_pr.outputs.count != 0 }}
+        run: |
+          pr_list=$(gh pr list --base main --head staging --json number)
+          pr_number=$(echo "${{ pr_list }}" | jq -r '.[0].number')
+          gh pr edit ${{pr_number}} -t "RELEASE: ${{steps.time.outputs.time}}" -b "${{steps.get_diff.outputs.diff_files}}"
+          
+
+# name: Create Pull Request to Main
+
+# on:
+#   push:
+#     branches:
+#       - staging
+
+# jobs:
+#   create_pull_request:
+#     runs-on: ubuntu-latest
+    
+#     env:
+#       GH_TOKEN: ${{ secrets.GH_CUSTOM_TOKEN }}
+
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0
+      
+#       - name: Check if pr exists
+#         id: check_pr
+#         run: |
+#           echo "::set-output name=count::$(gh pr list -B main | wc -l)"
+          
+#       - name: Get Timestamp
+#         id: time
+#         uses: nanzm/get-time-action@master
+#         with:
+#           timeZone: UTC+8
+#           format: 'YYYY-MM-DD-HH-mm-ss'
+
+#       - name: Create or Update Pull Request
+#         id: pr
+#         run: |
+#           diff_files=$(gh pr diff ${github.event.number} --name-only | tr "\n" " ")
+#           if ${{ steps.check_pr.outputs.count == 0 }}; then
+#             gh pr create --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff_files}}"
+#           else
+#             pr_list=$(gh pr list --base main --head staging --json title,body,number)
+#             pr_number=$(echo "${{ steps.check_pr.outputs.pr_list }}" | jq -r '.[0].number')
+#             gh pr edit ${{pr_number}} --title "RELEASE: ${{steps.time.outputs.time}}" --body "${{diff_files}}"
+#           fi
